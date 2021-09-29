@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>injectAfter</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
+    <script src="https://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
+    <script src="https://cdn.rawgit.com/chaijs/chai/3.5.0/chai.js"></script>
+    <script src="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+</head>
+
+<body>
+    <div id="mocha"></div>
+</body>
+
+</html>
+
+
+<script>
+    function injectAfter(array, afterKey, newKey, newValue) {
+        var final = [];
+        if (!array.hasOwnProperty(afterKey)) {
+
+            var final = array;
+            final[newKey] = newValue;
+
+        } else if (array.hasOwnProperty(newKey)) {
+
+            for (const [key, value] of Object.entries(array)) {
+                final.push({
+                    [key]: value
+                });
+                if (key != newKey) {
+                    final.push({
+                        [key]: value
+                    });
+                }
+                if (key === afterKey) {
+                    final.push({
+                        [newKey]: newValue
+                    });
+                }
+            }
+
+        } else {
+
+            for (const [key, value] of Object.entries(array)) {
+                final.push({
+                    [key]: value
+                });
+                if (key === afterKey) {
+                    final.push({
+                        [newKey]: newValue
+                    });
+                }
+            }
+        }
+
+        return final;
+    }
+
+
+    //  Unint Tests
+    const mocha = window.mocha;
+    mocha.setup('bdd');
+
+    const chai = window.chai
+    const expect = chai.expect
+
+    describe('injectAfter', () => {
+        it('should inject new key/value after item in an object', () => {
+            expect(injectAfter({
+                'a': 1,
+                'b': 2,
+                'd': 4
+            }, 'j', 'c', 3)).to.deep.equal({
+                a: 1,
+                b: 2,
+                d: 4,
+                c: 3
+            })
+        })
+    })
+
+    mocha.checkLeaks();
+    mocha.run();
+</script>
